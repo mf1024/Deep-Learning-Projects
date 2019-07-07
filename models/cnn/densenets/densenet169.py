@@ -1,6 +1,7 @@
+#Implementation based on https://arxiv.org/abs/1608.06993
+
 import torch
 from torch import nn
-from torchsummary import summary
 
 class ConvBlock(nn.Module):
     def __init__(self, in_channels, bottleneck_channels, out_channels):
@@ -134,6 +135,7 @@ class DenseNet169(nn.Module):
 
         self.global_avg_pooling = nn.AvgPool2d(kernel_size=7)
         self.fully_connected = nn.Linear(channels, self.class_num)
+        self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
 
@@ -148,6 +150,7 @@ class DenseNet169(nn.Module):
         x = self.global_avg_pooling(x)
         x = torch.squeeze(x)
         x = self.fully_connected(x)
+        x = self.softmax(x)
 
         return x
 
